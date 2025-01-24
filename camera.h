@@ -5,7 +5,7 @@
 
 class camera {
 public:
-    float aspect_ratio = 1.0;
+    double aspect_ratio = 1.0;
     int image_height = 100;
     int samples_per_pixel = 10;
 
@@ -35,7 +35,7 @@ public:
 private:
     // Calculate the image width and ensure that it is at least 1
     int image_width;            // Rendered image width
-    float pixel_samples_scale;  // Color scale factor for a sum of pixel samples
+    double pixel_samples_scale;  // Color scale factor for a sum of pixel samples
     point3 center;              // Camera center
     point3 pixel00_loc;         // Location of pixel 0,0
     vec3 pixel_delta_u;         // Offset to pixel to the right
@@ -52,7 +52,7 @@ private:
         // Determine viewport dimensions
         auto focal_length = 1.0;
         auto viewport_height = 2.0;
-        auto viewport_width = viewport_height * (float(image_width) / image_height);
+        auto viewport_width = viewport_height * (double(image_width) / image_height);
 
         // Calculate vectors across the horizontal and down the vertical viewport edges
         auto viewport_u = vec3(viewport_width, 0, 0);
@@ -82,7 +82,7 @@ private:
 
     vec3 sample_square() const {
         // Returns the vector to a random point in the [-.5, -.5]-[+.5, +.5] unit square
-        return vec3(random_float() - 0.5, random_float() - 0.5, 0);
+        return vec3(random_double() - 0.5, random_double() - 0.5, 0);
     }
 
     vec3 sample_disk(double radius) const {
@@ -94,7 +94,8 @@ private:
         hit_record rec;
 
         if (world.hit(r, interval(0, infinity), rec)) {
-            return 0.5 * (rec.normal + color(1,1,1));
+            vec3 direction = random_on_hemisphere(rec.normal);
+            return 0.5 * ray_color(ray(rec.p, direction), world);
         }
 
         vec3 unit_direction = unit_vector(r.direction());
