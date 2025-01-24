@@ -5,8 +5,7 @@
 #include "hittable_list.h"
 #include "sphere.h"
 
-int main()
-{
+int main() {
     hittable_list world;
 
     world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
@@ -16,6 +15,7 @@ int main()
 
     cam.aspect_ratio = 16.0 / 9.0;
     cam.image_height = 480;
+    cam.samples_per_pixel = 100;
 
     cam.render(world);
 }
